@@ -47,7 +47,7 @@ namespace WebAPIIdentity.Controllers
         }
 
 
-        [HttpGet("getTopScores")]
+        [HttpGet("GetTopScores")]
         public ActionResult GetTopScores(int count)
         {
             List<Highscore> highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
@@ -56,7 +56,7 @@ namespace WebAPIIdentity.Controllers
             return Ok(highscores);
         }
 
-        [HttpPost("updateHighscore")]
+        [HttpPost("UpdateHighscore")]
         public async Task<ActionResult<Highscore>> UpdateHighscore(Highscore highscore, int count)
         {
             _dbContext.Highscores.Add(highscore);
@@ -88,8 +88,8 @@ namespace WebAPIIdentity.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<ActionResult> GetToken([FromBody] MyLoginModelType myLoginModel)
+        [HttpPost("Login")]
+        public async Task<ActionResult> Login([FromBody] MyLoginModelType myLoginModel)
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.Email == myLoginModel.Email);
             if (user != null)
@@ -123,8 +123,8 @@ namespace WebAPIIdentity.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("signup")]
-        public async Task<ActionResult> Register([FromBody] MyLoginModelType myLoginModel)
+        [HttpPost("Signup")]
+        public async Task<ActionResult> Signup([FromBody] MyLoginModelType myLoginModel)
         {
             WebAPIIdentityUser webAPIIdentityUser = new WebAPIIdentityUser()
             {
@@ -157,8 +157,8 @@ namespace WebAPIIdentity.Controllers
             }
         }
 
-        [HttpDelete("Delete")]
-        public async Task<ActionResult> Delete(string email)
+        [HttpDelete("DeleteUser")]
+        public async Task<ActionResult> DeleteUser(string email)
         {
 
             if (email == null)
@@ -208,7 +208,7 @@ namespace WebAPIIdentity.Controllers
 
         static async Task SendEmail(string email, string subject, string message)
         {
-            var apiKey = "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";// Environment.GetEnvironmentVariable("NAME_OF_THE_ENVIRONMENT_VARIABLE_FOR_YOUR_SENDGRID_KEY");
+            var apiKey = Environment.GetEnvironmentVariable("NAME_OF_THE_ENVIRONMENT_VARIABLE_FOR_YOUR_SENDGRID_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("jesse.burstrom@gmail.com", "Example User");
             //var subject = "Sending with SendGrid is Fun";
