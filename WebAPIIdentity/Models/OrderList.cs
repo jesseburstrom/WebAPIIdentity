@@ -11,5 +11,6 @@ namespace WebAPIIdentity.Models
     {
         public int OrderListId { get; set; }
         public WebAPIIdentityUser UserId { get; set; }
+        public ICollection<ProductOrder> ProductOrders { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPIIdentity.Data;
 
 namespace WebAPIIdentity.Migrations
 {
     [DbContext(typeof(WebAPIIdentityContext))]
-    partial class WebAPIIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20211120143759_Shopping20")]
+    partial class Shopping20
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,28 +236,6 @@ namespace WebAPIIdentity.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("WebAPIIdentity.Models.CategoryCategory", b =>
-                {
-                    b.Property<int>("CategoryCategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CategoryId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryCategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("CategoryId1");
-
-                    b.ToTable("CategoryCategories");
-                });
-
             modelBuilder.Entity("WebAPIIdentity.Models.CategoryProduct", b =>
                 {
                     b.Property<int>("CategoryProductId")
@@ -407,17 +387,6 @@ namespace WebAPIIdentity.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebAPIIdentity.Models.CategoryCategory", b =>
-                {
-                    b.HasOne("WebAPIIdentity.Models.Category", null)
-                        .WithMany("CategoryCategories1")
-                        .HasForeignKey("CategoryId");
-
-                    b.HasOne("WebAPIIdentity.Models.Category", null)
-                        .WithMany("CategoryCategories2")
-                        .HasForeignKey("CategoryId1");
-                });
-
             modelBuilder.Entity("WebAPIIdentity.Models.CategoryProduct", b =>
                 {
                     b.HasOne("WebAPIIdentity.Models.Category", null)
@@ -453,10 +422,6 @@ namespace WebAPIIdentity.Migrations
 
             modelBuilder.Entity("WebAPIIdentity.Models.Category", b =>
                 {
-                    b.Navigation("CategoryCategories1");
-
-                    b.Navigation("CategoryCategories2");
-
                     b.Navigation("CategoryProducts");
                 });
 

@@ -50,18 +50,35 @@ namespace WebAPIIdentity.Controllers
         [HttpGet("GetTopScores")]
         public ActionResult GetTopScores(int count)
         {
-            List<Highscore> highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
+            List<Highscore> highscores = new List<Highscore>();
+            if (count > 0)
+            {
+                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
+            }
+            else
+            {
+                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).ToList();
+            }
+
             //List<Highscore> highscores = new List<Highscore>() { new Highscore("Yatzy", 310), new Highscore("I ❤️ Flutter", 301), new Highscore("Jesse", 304), new Highscore("和平 福", 300),
             //    new Highscore("4ever", 184), new Highscore("Yatzy", 200), new Highscore("Gizmo", 263), new Highscore("Jesse", 153), new Highscore("Lexicon", 305), new Highscore("Hello", 287) };
             return Ok(highscores);
         }
 
-        [HttpPost("UpdateHighscore")]
+        [HttpPost("UpdateAndReturnHighscore")]
         public async Task<ActionResult<Highscore>> UpdateHighscore(Highscore highscore, int count)
         {
             _dbContext.Highscores.Add(highscore);
             await _dbContext.SaveChangesAsync();
-            List<Highscore> highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
+            List<Highscore> highscores = new List<Highscore>();
+            if (count > 0)
+            {
+                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
+            }
+            else
+            {
+                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).ToList();
+            }
             return Ok(highscores);
         }
 
@@ -116,10 +133,10 @@ namespace WebAPIIdentity.Controllers
                 }
                 else
                 {
-                    return Ok("failed, try again");
+                    return BadRequest("Password incorrect");
                 }
             }
-            return Ok("failed, try again");
+            return NotFound("User not found");
         }
 
         [AllowAnonymous]
@@ -135,13 +152,13 @@ namespace WebAPIIdentity.Controllers
             var result = await _userManager.CreateAsync(webAPIIdentityUser, myLoginModel.Password);
             if (result.Succeeded)
             {
-                var userId = await _userManager.GetUserIdAsync(webAPIIdentityUser);
-                string returnUrl = Url.Content("~/");
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(webAPIIdentityUser);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = "https://localhost:44357/api/Values/ConfirmEmail?userId=" + userId + "&code=" + code;
+                //var userId = await _userManager.GetUserIdAsync(webAPIIdentityUser);
+                //string returnUrl = Url.Content("~/");
+                //var code = await _userManager.GenerateEmailConfirmationTokenAsync(webAPIIdentityUser);
+                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                //var callbackUrl = "https://localhost:44357/api/Values/ConfirmEmail?userId=" + userId + "&code=" + code;
 
-                SendEmail(myLoginModel.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.").Wait();
+                //SendEmail(myLoginModel.Email, "Confirm your email", $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.").Wait();
 
                 return Ok(new { Result = "Register Success" });
             }
@@ -151,9 +168,8 @@ namespace WebAPIIdentity.Controllers
                 foreach (var error in result.Errors)
                 {
                     stringBuilder.Append(error.Description);
-                    //stringBuilder.Append("\r\n");
                 }
-                return Ok(new { Result = $"Register Fail: {stringBuilder.ToString()}" });
+                return BadRequest(new { Result = $"Register Fail: {stringBuilder.ToString()}" });
             }
         }
 
@@ -163,7 +179,7 @@ namespace WebAPIIdentity.Controllers
 
             if (email == null)
             {
-                return Ok("BadId");
+                return Ok("Email cannot be null");
             }
             var user = _dbContext.Users.FirstOrDefault(x => x.Email == email);
             if (user != null)
@@ -176,33 +192,10 @@ namespace WebAPIIdentity.Controllers
                 }
                 else
                 {
-                    return Ok("Cannot delete user");
+                    return BadRequest("Cannot delete user");
                 }
             }
-            return Ok("User does not exist");
-
-            //var logins = await _userManager.GetLoginsAsync(user);
-            //var rolesForUser = await _userManager.GetRolesAsync(user);
-
-            //using (var transaction = _dbContext.Database.BeginTransaction())
-            //{
-            //    foreach (var login in logins.ToList())
-            //    {
-            //        await _userManager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
-            //    }
-
-            //    if (rolesForUser.Count() > 0)
-            //    {
-            //        foreach (var item in rolesForUser.ToList())
-            //        {
-            //            // item should be the name of the role
-            //            var result = await _userManager.RemoveFromRoleAsync(user, item);
-            //        }
-            //    }
-
-            //    await _userManager.DeleteAsync(user);
-            //    transaction.Commit();
-            //}          
+            return NotFound("User does not exist");
         }
 
 
