@@ -9,7 +9,10 @@ namespace WebAPIIdentity.Models
     {
         public int ProductId { get; set; }
         public string Description { get; set; }
-        public double Price { get; set; }
-        public ICollection<CategoryProduct> CategoryProducts { get; set; }
+        public string DescriptionSwedish { get; set; }
+        public int Price { get; set; }
+        public int ImageId { get; set; }
+        private ICollection<CategoryProduct> CategoryProducts { get; set; }
+
     }
 }

@@ -46,6 +46,208 @@ namespace WebAPIIdentity.Controllers
             _signInManager = signInManager;
         }
 
+        [HttpPost("CreateCategoryProduct")]
+        public async Task<ActionResult<CategoryProduct>> CreateCategoryProduct(CategoryProduct categoryProduct)
+        {
+            _dbContext.CategoryProducts.Add(categoryProduct);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryProduct added");
+        }
+
+        [HttpPost("CreateCategoryCategory")]
+        public async Task<ActionResult<CategoryCategory>> CreateCategoryCategory(CategoryCategory categoryCategory)
+        {
+            _dbContext.CategoryCategories.Add(categoryCategory);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryCategory added");
+        }
+
+        [HttpPost("CreateProduct")]
+        public async Task<ActionResult<Product>> CreateProduct(Product product)
+        {
+            _dbContext.Products.Add(product);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Product added");
+        }
+
+        [HttpPost("CreateCategory")]
+        public async Task<ActionResult<Category>> CreateCategory(Category category)
+        {
+            _dbContext.Categories.Add(category);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Category added");
+        }
+
+        [HttpGet("GetCategoryProduct")]
+        public ActionResult GetCategoryProduct(int idCategory, int idProduct)
+        {
+            List<CategoryProduct> categoryProducts = new List<CategoryProduct>();
+            // only makes sense searching on one id at time
+            if (idCategory > 0)
+            {
+                categoryProducts = _dbContext.CategoryProducts.Where(p => p.CategoryId == idCategory).ToList();
+            }
+            else
+            {
+                categoryProducts = _dbContext.CategoryProducts.Where(p => p.ProductId == idProduct).ToList();
+            }
+
+            return Ok(categoryProducts);
+        }
+
+        [HttpGet("GetCategoryCategory")]
+        public ActionResult GetCategoryCategory(int id1, int id2)
+        {
+            List<CategoryCategory> categoryCategories = new List<CategoryCategory>();
+            // only makes sense searching on one id at time
+            if (id1 > 0)
+            {
+                categoryCategories = _dbContext.CategoryCategories.Where(p => p.CategoryId1 == id1).ToList();
+            }
+            else
+            {
+                categoryCategories = _dbContext.CategoryCategories.Where(p => p.CategoryId2 == id2).ToList();
+            }
+
+            return Ok(categoryCategories);
+        }
+
+        [HttpGet("GetProduct")]
+        public ActionResult GetProduct(int id)
+        {
+            Product product = _dbContext.Products.Where(p => p.ProductId == id).FirstOrDefault();
+            return Ok(product);
+        }
+
+        [HttpGet("GetCategory")]
+        public ActionResult GetCategory(int id)
+        {
+            Category category = _dbContext.Categories.Where(c => c.CategoryId == id).FirstOrDefault();
+
+            return Ok(category);
+        }
+
+        [HttpGet("GetAllCategoryProducts")]
+        public ActionResult GetAllCategoryProducts()
+        {
+            List<CategoryProduct> categoryProducts = new List<CategoryProduct>();
+
+            categoryProducts = _dbContext.CategoryProducts.ToList();
+
+            return Ok(categoryProducts);
+        }
+
+        [HttpGet("GetAllCategoryCategories")]
+        public ActionResult GetAllCategoryCategories()
+        {
+            List<CategoryCategory> categoryCategories = new List<CategoryCategory>();
+
+            categoryCategories = _dbContext.CategoryCategories.ToList();
+
+            return Ok(categoryCategories);
+        }
+
+
+        [HttpGet("GetAllProducts")]
+        public ActionResult GetAllProducts()
+        {
+            List<Product> products = new List<Product>();
+            products = _dbContext.Products.ToList();
+
+            return Ok(products);
+        }
+
+        [HttpGet("GetAllCategories")]
+        public ActionResult GetAllCategories()
+        {
+            List<Category> categories = new List<Category>();
+            categories = _dbContext.Categories.ToList();
+
+            return Ok(categories);
+        }
+
+        [HttpPut("UpdateCategoryProduct")]
+        public async Task<ActionResult<CategoryProduct>> UpdateCategoryProduct(CategoryProduct categoryProduct)
+        {
+            _dbContext.CategoryProducts.Update(categoryProduct);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryProduct updated");
+        }
+
+        [HttpPut("UpdateCategoryCategory")]
+        public async Task<ActionResult<CategoryCategory>> UpdateCategoryCategory(CategoryCategory categoryCategory)
+        {
+            _dbContext.CategoryCategories.Update(categoryCategory);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryCategory updated");
+        }
+
+        [HttpPut("UpdateProduct")]
+        public async Task<ActionResult<Product>> UpdateProduct(Product product)
+        {
+            _dbContext.Products.Update(product);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Product updated");
+        }
+
+        [HttpPut("UpdateCategory")]
+        public async Task<ActionResult<Category>> UpdateCategory(Category category)
+        {
+            _dbContext.Categories.Update(category);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Category updated");
+        }
+
+        [HttpDelete("DeleteCategoryProduct")]
+        public async Task<ActionResult> DeleteCategoryProduct(int idCategory, int idProduct)
+        {
+            CategoryProduct categoryProduct = _dbContext.CategoryProducts.Where(p => p.ProductId == idProduct && p.CategoryId == idCategory).FirstOrDefault();
+            _dbContext.CategoryProducts.Remove(categoryProduct);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryProduct deleted");
+        }
+
+        [HttpDelete("DeleteCategoryCategory")]
+        public async Task<ActionResult> DeleteCategoryCategory(int id)
+        {
+            CategoryCategory categoryCategory = _dbContext.CategoryCategories.Where(p => p.CategoryCategoryId == id).FirstOrDefault();
+            _dbContext.CategoryCategories.Remove(categoryCategory);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("CategoryCategor deleted");
+        }
+
+        [HttpDelete("DeleteProduct")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            Product product = _dbContext.Products.Where(p => p.ProductId == id).FirstOrDefault();
+            _dbContext.Products.Remove(product);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Product deleted");
+        }
+
+        [HttpDelete("DeleteCategory")]
+        public async Task<ActionResult> DeleteCategory(int id)
+        {
+            Category category = _dbContext.Categories.Where(p => p.CategoryId == id).FirstOrDefault();
+            _dbContext.Categories.Remove(category);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("Category deleted");
+        }
+
+
+
 
         [HttpGet("GetTopScores")]
         public ActionResult GetTopScores(int count)
@@ -65,21 +267,13 @@ namespace WebAPIIdentity.Controllers
             return Ok(highscores);
         }
 
-        [HttpPost("UpdateAndReturnHighscore")]
-        public async Task<ActionResult<Highscore>> UpdateHighscore(Highscore highscore, int count)
+        [HttpPost("UpdateHighscore")]
+        public async Task<ActionResult> UpdateHighscore(Highscore highscore)
         {
             _dbContext.Highscores.Add(highscore);
             await _dbContext.SaveChangesAsync();
-            List<Highscore> highscores = new List<Highscore>();
-            if (count > 0)
-            {
-                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).Take(count).ToList();
-            }
-            else
-            {
-                highscores = _dbContext.Highscores.OrderByDescending(x => x.Score).ToList();
-            }
-            return Ok(highscores);
+
+            return Ok("Highscores updated");
         }
 
         [AllowAnonymous]

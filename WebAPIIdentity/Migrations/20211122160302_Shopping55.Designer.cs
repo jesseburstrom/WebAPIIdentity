@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPIIdentity.Data;
 
 namespace WebAPIIdentity.Migrations
 {
     [DbContext(typeof(WebAPIIdentityContext))]
-    partial class WebAPIIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20211122160302_Shopping55")]
+    partial class Shopping55
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -247,23 +249,7 @@ namespace WebAPIIdentity.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Category1CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Category2CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId2")
-                        .HasColumnType("int");
-
                     b.HasKey("CategoryCategoryId");
-
-                    b.HasIndex("Category1CategoryId");
-
-                    b.HasIndex("Category2CategoryId");
 
                     b.ToTable("CategoryCategories");
                 });
@@ -349,8 +335,8 @@ namespace WebAPIIdentity.Migrations
                     b.Property<int>("ImageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.HasKey("ProductId");
 
@@ -433,31 +419,16 @@ namespace WebAPIIdentity.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebAPIIdentity.Models.CategoryCategory", b =>
-                {
-                    b.HasOne("WebAPIIdentity.Models.Category", "Category1")
-                        .WithMany()
-                        .HasForeignKey("Category1CategoryId");
-
-                    b.HasOne("WebAPIIdentity.Models.Category", "Category2")
-                        .WithMany()
-                        .HasForeignKey("Category2CategoryId");
-
-                    b.Navigation("Category1");
-
-                    b.Navigation("Category2");
-                });
-
             modelBuilder.Entity("WebAPIIdentity.Models.CategoryProduct", b =>
                 {
                     b.HasOne("WebAPIIdentity.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("CategoryProducts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebAPIIdentity.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("CategoryProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -489,9 +460,19 @@ namespace WebAPIIdentity.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("WebAPIIdentity.Models.Category", b =>
+                {
+                    b.Navigation("CategoryProducts");
+                });
+
             modelBuilder.Entity("WebAPIIdentity.Models.OrderList", b =>
                 {
                     b.Navigation("ProductOrders");
+                });
+
+            modelBuilder.Entity("WebAPIIdentity.Models.Product", b =>
+                {
+                    b.Navigation("CategoryProducts");
                 });
 #pragma warning restore 612, 618
         }
