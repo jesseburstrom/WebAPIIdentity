@@ -9,6 +9,8 @@ Websocket is also implemented for the chat function and the multiplayer yatzy.
 
 There is also added support for email verification.
 
+[Link To Client System](https://github.com/jesseburstrom/client_system/blob/master/README.md)
+
 ![Alt Text](Database.jpg?raw=true "Server Database")
 
-[Link To Client System](https://github.com/jesseburstrom/client_system/blob/master/README.md)
+
