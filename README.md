@@ -11,4 +11,4 @@ There is also added support for email verification.
 
 ![Alt Text](Database.jpg?raw=true "Server Database")
 
-![Alt Text](https://github.com/jesseburstrom/client_system/blob/master/README.md){target="_blank"}
+<a href="https://github.com/jesseburstrom/client_system/blob/master/README.md target="_blank">Link To Client System</a>
